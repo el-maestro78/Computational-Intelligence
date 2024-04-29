@@ -30,8 +30,10 @@ import pandas as pd
 import re
 
 # Pandas λόγω μεγαλύτερης εξοικείωσης
-df = pd.read_csv("iphi2802.csv", delimiter="\t", encoding='utf-8')
-
+try:
+    df = pd.read_csv("iphi2802.csv", delimiter="\t", encoding='utf-8')
+except:
+    df = pd.read_csv("/content/drive/MyDrive/iphi2802.csv", delimiter="\t", encoding='utf-8')
 
 pattern = r'[.,\d\[\]-]'
 
@@ -429,5 +431,49 @@ plt.show()
 """### A5. Γλωσσικά Μοντέλα (bonus)"""
 
 from transformers import AutoTokenizer, AutoModel
-tokeniser = AutoTokenizer.from_pretrained("pranaydeeps/Ancient-Greek-BERT")
-model = AutoModel.from_pretrained("pranaydeeps/Ancient-Greek-BERT")
+from keras.models import Sequential
+from keras.layers import Dense, Dropout
+from sklearn.metrics import mean_absolute_error
+import numpy as np
+import torch
+
+tokenizer = AutoTokenizer.from_pretrained("pranaydeeps/Ancient-Greek-BERT")
+model_bert = AutoModel.from_pretrained("pranaydeeps/Ancient-Greek-BERT")
+nn_mae = []
+bert_mae = []
+
+for fold, (train_index, val_index) in enumerate(kfold.split(X,y)):
+    X_train, X_val = X[train_index], X[val_index]
+    y_train, y_val = y[train_index], y[val_index]
+
+    X_train_str = [" ".join(map(str, row)) for row in X_train]
+    X_val_str = [" ".join(map(str, row)) for row in X_val]
+    X_train_bert = tokenizer(X_train_str, padding=True, truncation=True, return_tensors="pt")
+    X_val_bert = tokenizer(X_val_str, padding=True, truncation=True, return_tensors="pt")
+
+    with torch.no_grad():
+        outputs_train = model_bert(**X_train_bert)
+        outputs_val = model_bert(**X_val_bert)
+    X_train_features = outputs_train.last_hidden_state.numpy()
+    X_val_features = outputs_val.last_hidden_state.numpy()
+
+    model_nn = Sequential()
+    model_nn.add(Dropout(rate=dropout_rate_in, input_shape=(5,)))
+    model_nn.add(Dense(node_num, activation="relu"))
+    model_nn.add(Dropout(rate=dropout_rate_hid))
+    model_nn.compile(optimizer='sgd', loss='mse', metrics=['mae'])
+    history = model_nn.fit(X_train, y_train,
+                           validation_data=(X_val, y_val), verbose=0)
+    scores = model_nn.evaluate(X_val, y_val, verbose=0)
+    model_nn.fit(X_train_features, y_train, validation_split=0.2)
+
+    loss, mae = model_nn.evaluate(X_val_features, y_val)
+    nn_mae.append(mae)
+    mae = mean_absolute_error(y_val, outputs_val)
+    bert_mae.append(mae)
+
+# Υπολογισμός μέσης τιμής των μετρικών απόδοσης
+bert_mae_mean = np.mean(bert_mae)
+nn_mae_mean = np.mean(nn_mae)
+print("Mean NN MSE:", nn_mae_mean )
+print("Mean Bert MSE:", bert_mae_mean )
