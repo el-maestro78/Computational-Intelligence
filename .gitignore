@@ -152,3 +152,4 @@ cython_debug/
 .idea/
 Part A/PartA_1072578_NP.ipynb
 Part B/test.py
+/Part B/test
