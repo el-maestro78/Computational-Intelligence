@@ -5,13 +5,13 @@ Archaeological research can greatly benefit from the use of new technologies, pa
 
 ## Part A
 #### Stack
-Python, Keras, scikit-learn
-![Part_A](Part A/Plots/Α3.png)<br/>
+Python, Keras, scikit-learn <br/>
+![Part_A](Part%20A/Plots/Α3.png)<br/>
 Part A's concept was to develop and train an Artificial Neural Network (ANN) to predict the precise date of an inscription based on its text, with the option to use additional features such as the geographical location of the inscription.
 <br/><br/>
 
 ## Part B
 #### Stack
-Python, DEAP, scikit-learn
-![Part_B](Part B/Average Fitness.png) <br/>
+Python, DEAP, scikit-learn <br/>
+![Part_B](Part%20B/Average%20Fitness.png)<br/>
 Part B's concept was to implement a Genetic Algorithm (GA) to 'guess' the missing words and restore the given inscription. The main idea behind using a GA is to search for the missing words so that the completed inscription resembles similar inscriptions as closely as possible.
