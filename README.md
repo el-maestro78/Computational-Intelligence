@@ -1,4 +1,4 @@
-# Computational Intelligence
+# Computational Intelligence @ CEID 
 
 
 Archaeological research can greatly benefit from the use of new technologies, particularly when dealing with ancient inscriptions that often face challenges such as partial or complete destruction, illegible writing, or loss of symbols and letters, making dating and classification difficult. In this project, you are provided with a dataset excerpt from the largest available collection of ancient Greek inscriptions, I.PHI, which originates from the processing of the PHI (Packard Humanities Institute) database. The excerpt includes 2,802 inscriptions, all of which have a date range from 720 BCE to 1453 CE, and a vocabulary of 24,679 unique words. <br/>
